@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:esclub/components/home.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -54,14 +53,14 @@ class _Register extends State<Register> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Username",
                       style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
                           color: Colors.black87),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     TextField(
@@ -71,7 +70,7 @@ class _Register extends State<Register> {
                         });
                       },
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                         enabledBorder: OutlineInputBorder(
@@ -83,7 +82,7 @@ class _Register extends State<Register> {
                             borderSide: BorderSide(color: Colors.grey)),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     )
                   ],
@@ -91,14 +90,14 @@ class _Register extends State<Register> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Password",
                       style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
                           color: Colors.black87),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     TextField(
@@ -108,7 +107,7 @@ class _Register extends State<Register> {
                         });
                       },
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                         enabledBorder: OutlineInputBorder(
@@ -120,7 +119,7 @@ class _Register extends State<Register> {
                             borderSide: BorderSide(color: Colors.grey)),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     )
                   ],
@@ -160,10 +159,10 @@ class _Register extends State<Register> {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   scrollable: true,
-                                  title: Text('Failed'),
+                                  title: const Text('Failed'),
                                   actions: [
                                     ElevatedButton(
-                                        child: Text("Ok"),
+                                        child: const Text("Ok"),
                                         onPressed: () {
                                           Navigator.push(
                                             context,

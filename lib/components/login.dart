@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:esclub/components/home.dart';
 import 'package:esclub/components/register.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:lottie/lottie.dart';
-import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -46,7 +44,11 @@ class _Login extends State<Login> {
               Container(
                 padding: const EdgeInsets.all(10),
                 child: TextField(
-
+                  onSubmitted: (String value) {
+                    setState(() {
+                      username = value;
+                    });
+                  },
                   controller: nameController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -91,11 +93,10 @@ class _Login extends State<Login> {
                           'password': password,
                         }),
                       );
-
                       if (response.statusCode == 200) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const Home()),
+                          MaterialPageRoute(builder: (context) => Home()),
                         );
                       } else {
                         showDialog(
@@ -103,10 +104,10 @@ class _Login extends State<Login> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 scrollable: true,
-                                title: Text('Failed'),
+                                title: const Text('Failed'),
                                 actions: [
                                   ElevatedButton(
-                                      child: Text("Ok"),
+                                      child: const Text("Ok"),
                                       onPressed: () {
                                         Navigator.push(
                                           context,

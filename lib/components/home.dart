@@ -1,5 +1,5 @@
 import 'package:esclub/components/clubs.dart';
-import 'package:esclub/components/deneme.dart';
+import 'package:esclub/components/announcements.dart';
 import 'package:esclub/components/landing_page.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +14,7 @@ class _HomeState extends State<Home> {
   int _selectedIndex = 0;
 
   static List<Widget> pages = <Widget>[
-    const Deneme(),
+    const Announcements(),
     const Clubs(),
     Container(color: Colors.red[900]),
   ];
