@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'club_details.dart';
 
 class Clubs extends StatefulWidget {
   const Clubs({Key? key}) : super(key: key);
@@ -11,44 +14,78 @@ class _ClubsState extends State<Clubs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+      body: SingleChildScrollView(
+        child: Stack(
           children: [
-             Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Clubs',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                for(var i = 0; i < 3; i++)
-                  ClubCard(child: Column(
-                    children: [
-                      Image.asset("assets/clubs/eestec.jpg"),
-                      const Divider(color: Colors.black),
-                      const Text("EESTEC", style: TextStyle(fontWeight: FontWeight.bold)),
-                    ],
-                  )),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ClubCard(child: Column(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      'Clubs',
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                  ),
+                ),
+                Wrap(
                   children: [
-                    Image.asset("assets/clubs/eestec.jpg"),
-                    const Divider(color: Colors.black),
-                    const Text("EESTEC", style: TextStyle(fontWeight: FontWeight.bold)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 5),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        color: Colors.grey[400],
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            "This is the clubs page. Here you can find all "
+                            "the clubs that are part of EsClub.",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: GoogleFonts.openSans().fontFamily),
+                          ),
+                        ),
+                      ),
+                    )
                   ],
-                )),
-                ClubCard(child: Image.asset("assets/esclub-logo.png")),
-                ClubCard(child: Image.asset("assets/esclub-logo.png")),
+                ),
+                Wrap(
+                  children: [
+                    for (var i = 0; i < 10; i++)
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          minimumSize: Size.zero,
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ClubDetails()));
+                        },
+                        child: ClubCard(
+                          child: Column(
+                            children: [
+                              Image.asset("assets/clubs/eestec.jpg"),
+                              const Divider(color: Colors.black),
+                              const Text("EESTEC",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                )
               ],
             ),
           ],
+        ),
       ),
     );
   }
@@ -73,4 +110,3 @@ class ClubCard extends StatelessWidget {
     );
   }
 }
-
