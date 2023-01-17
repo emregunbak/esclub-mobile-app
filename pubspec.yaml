@@ -32,6 +32,11 @@ dependencies:
   flutter:
     sdk: flutter
   lottie: ^2.1.0
+  http: ^0.13.5
+  google_fonts: ^3.0.1
+  video_player: ^2.2.4
+  font_awesome_flutter: ^10.3.0
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -41,6 +46,7 @@ dependencies:
   flutter_riverpod: ^2.1.1
 
 dev_dependencies:
+  flutter_native_splash: ^2.2.16
   flutter_test:
     sdk: flutter
 
@@ -50,6 +56,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+flutter_native_splash:
+  color: "#FFFFFF"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
