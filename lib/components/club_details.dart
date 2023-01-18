@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../models/club.dart';
+
 class ClubDetails extends StatelessWidget {
-  const ClubDetails({Key? key}) : super(key: key);
+  const ClubDetails({Key? key, required this.club}) : super(key: key);
+  final Club club;
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +28,11 @@ class ClubDetails extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(10.0),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
                   child: Center(
-                    child: Text("EESTEC",
-                        style: TextStyle(
+                    child: Text(club.clubName,
+                        style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
@@ -45,7 +48,7 @@ class ClubDetails extends StatelessWidget {
                       child: SizedBox(
                         width: 150,
                         height: 150,
-                        child: Image.asset("assets/clubs/eestec.jpg"),
+                        child: Image.network(club.logo.imageURL),
                       ),
                     ),
                   ],
@@ -76,11 +79,12 @@ class ClubDetails extends StatelessWidget {
                 ),
                 Wrap(
                   children: [
-                    SponsorCard(child: Image.asset("assets/clubs/evk.jpg")),
-                    SponsorCard(child: Image.asset("assets/clubs/evk.jpg")),
-                    SponsorCard(child: Image.asset("assets/clubs/evk.jpg")),
-                    SponsorCard(child: Image.asset("assets/clubs/evk.jpg")),
-                    SponsorCard(child: Image.asset("assets/clubs/evk.jpg")),
+                    SponsorCard(child: Image.asset("assets/sponsors/sponsor-1.png")),
+                    SponsorCard(child: Image.asset("assets/sponsors/sponsor-2.png")),
+                    SponsorCard(child: Image.asset("assets/sponsors/sponsor-3.png")),
+                    SponsorCard(child: Image.asset("assets/sponsors/sponsor-4.png")),
+                    SponsorCard(child: Image.asset("assets/sponsors/sponsor-5.png")),
+                    SponsorCard(child: Image.asset("assets/sponsors/sponsor-6.png")),
                   ],
                 ),
               ],

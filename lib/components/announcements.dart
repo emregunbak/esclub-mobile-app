@@ -1,33 +1,30 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:esclub/models/create_announcement.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
-List<Post> postFromJson(String str) =>
-    List<Post>.from(json.decode(str).map((x) => Post.fromMap(x)));
+import '../models/announcement.dart';
 
-class Post {
-  Post({required this.id, required this.title, required this.body});
+List<Announcement> announcementFromJson(String str) => List<Announcement>.from(
+    json.decode(str).map((x) => Announcement.fromJson(x)));
 
-  int id;
-  String? title;
-  String body;
+List<CreateAnnouncement> logoFromJson(String str) =>
+    List<CreateAnnouncement>.from(
+        json.decode(str).map((x) => CreateAnnouncement.fromJson(x)));
 
-  factory Post.fromMap(Map<String, dynamic> json) => Post(
-        id: json["id"],
-        title: json["title"],
-        body: json["body"],
-      );
-}
-
-Future<List<Post>> fetchPost() async {
-  final response =
-      await http.get(Uri.parse('http://10.0.2.2:8080/api/v1/announcements'));
+Future<List<Announcement>> fetchAnnouncement() async {
+  final response = await http.get(Uri.parse(
+      'http://esclub.eu-central-1.elasticbeanstalk.com/api/v1/announcements'));
 
   if (response.statusCode == 200) {
-    final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
-    return parsed.map<Post>((json) => Post.fromMap(json)).toList();
+    final parsed = json
+        .decode(utf8.decode(response.bodyBytes))
+        .cast<Map<String, dynamic>>();
+    return parsed
+        .map<Announcement>((json) => Announcement.fromJson(json))
+        .toList();
   } else {
     throw Exception('Failed to load album');
   }
@@ -41,7 +38,8 @@ class Announcements extends StatefulWidget {
 }
 
 class _Announcements extends State<Announcements> {
-  Future<List<Post>> futurePost = fetchPost();
+  Future<List<Announcement>> futureAnnouncement = fetchAnnouncement();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,20 +47,21 @@ class _Announcements extends State<Announcements> {
         backgroundColor: Colors.white,
         title: TextField(
           onSubmitted: (String value) async {
-            Response response = await post(
-              Uri.parse('http://10.0.2.2:8080/api/v1/announcements/create'),
+            Response response = (await http.post(
+              Uri.parse(
+                  'http://esclub.eu-central-1.elasticbeanstalk.com/api/v1/announcements/create'),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
               body: jsonEncode(<String, String>{
-                'clubId': "5",
+                'clubId': "2",
                 'title': value.split(" ")[0],
                 'body': value
               }),
-            );
+            ));
             if (response.statusCode == 201) {
               setState(() {
-                futurePost = fetchPost();
+                futureAnnouncement = fetchAnnouncement();
               });
             }
           },
@@ -71,58 +70,41 @@ class _Announcements extends State<Announcements> {
           ),
         ),
       ),
-      body: FutureBuilder<List<Post>>(
-        future: futurePost,
+      body: FutureBuilder<List<Announcement>>(
+        future: futureAnnouncement,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data!.length,
-              itemBuilder: (_, index) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                padding: const EdgeInsets.all(15.0),
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                            width: 40.0,
-                            height: 40.0,
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: AssetImage(
-                                      "assets/esclub-logo.png",
-                                    )))),
-                        Text(
-                          " ${snapshot.data![index].title}",
-                          style: const TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        IconButton(
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    border: Border.all(color: Colors.black),
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(snapshot.data![index].club.clubName),
+                        subtitle: Text(snapshot.data![index].club.shortName),
+                        trailing: IconButton(
                           icon: const Icon(Icons.delete),
                           tooltip: 'Delete Announce',
                           onPressed: () async {
                             Response response = await delete(
                               Uri.parse(
-                                  'http://10.0.2.2:8080/api/v1/announcements/delete/${snapshot.data![index].id}'),
+                                  'http://esclub.eu-central-1.elasticbeanstalk.com/api/v1/announcements/delete/${snapshot.data![index].id}'),
                               headers: <String, String>{
                                 'Content-Type':
-                                    'application/json; charset=UTF-8',
+                                'application/json; charset=UTF-8',
                               },
                             );
                             if (response.statusCode == 200) {
                               setState(() {
-                                futurePost = fetchPost();
+                                futureAnnouncement = fetchAnnouncement();
                               });
                               ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -130,20 +112,34 @@ class _Announcements extends State<Announcements> {
                             }
                           },
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      snapshot.data![index].body,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
+                        leading: Image(
+                          image: NetworkImage(
+                              snapshot.data![index].club.logo.imageURL,
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Text(snapshot.data![index].body,
+                              style: const TextStyle(fontSize: 17)),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                );
+              },
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
           }
+          return const CircularProgressIndicator();
         },
       ),
     );

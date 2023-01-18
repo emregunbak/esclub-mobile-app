@@ -136,7 +136,7 @@ class _Register extends State<Register> {
                       onPressed: () async {
                         Response response = await post(
                           Uri.parse(
-                              'http://10.0.2.2:8080/api/v1/auth/register'),
+                              'http://esclub.eu-central-1.elasticbeanstalk.com/api/v1/auth/register'),
                           headers: <String, String>{
                             'Content-Type': 'application/json; charset=UTF-8',
                           },

@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.announcement),
-              label: 'Deneme',
+              label: 'Announcements',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.people),

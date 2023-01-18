@@ -1,7 +1,34 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
+import '../models/club.dart';
+import '../models/logo.dart';
 import 'club_details.dart';
+
+List<Club> clubFromJson(String str) =>
+    List<Club>.from(json.decode(str).map((x) => Club.fromJson(x)));
+
+List<Logo> logoFromJson(String str) =>
+    List<Logo>.from(json.decode(str).map((x) => Logo.fromJson(x)));
+
+
+
+
+
+Future<List<Club>> fetchClub() async {
+  final response =
+      await http.get(Uri.parse('http://esclub.eu-central-1.elasticbeanstalk.com/api/v1/clubs'));
+
+  if (response.statusCode == 200) {
+    final parsed = json.decode(utf8.decode(response.bodyBytes)).cast<Map<String, dynamic>>();
+    return parsed.map<Club>((json) => Club.fromJson(json)).toList();
+  } else {
+    throw Exception('Failed to load album');
+  }
+}
 
 class Clubs extends StatefulWidget {
   const Clubs({Key? key}) : super(key: key);
@@ -11,81 +38,46 @@ class Clubs extends StatefulWidget {
 }
 
 class _ClubsState extends State<Clubs> {
+  late Future<List<Club>> futureClub;
+
+  @override
+  void initState() {
+    super.initState();
+    futureClub = fetchClub();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      'Clubs',
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                  ),
-                ),
-                Wrap(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 5),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        color: Colors.grey[400],
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text(
-                            "This is the clubs page. Here you can find all "
-                            "the clubs that are part of EsClub.",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: GoogleFonts.openSans().fontFamily),
-                          ),
+      body: FutureBuilder<List<Club>>(
+        future: futureClub,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(snapshot.data![index].clubName),
+                  subtitle: Text(snapshot.data![index].shortName),
+                  leading: Image.network(snapshot.data![index].logo.imageURL),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ClubDetails(
+                          club: snapshot.data![index],
                         ),
                       ),
-                    )
-                  ],
-                ),
-                Wrap(
-                  children: [
-                    for (var i = 0; i < 10; i++)
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          minimumSize: Size.zero,
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ClubDetails()));
-                        },
-                        child: ClubCard(
-                          child: Column(
-                            children: [
-                              Image.asset("assets/clubs/eestec.jpg"),
-                              const Divider(color: Colors.black),
-                              const Text("EESTEC",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                )
-              ],
-            ),
-          ],
-        ),
+                    );
+                  },
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+          return const CircularProgressIndicator();
+        },
       ),
     );
   }

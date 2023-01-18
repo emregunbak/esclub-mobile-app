@@ -84,7 +84,7 @@ class _Login extends State<Login> {
                     child: const Text('Login'),
                     onPressed: () async {
                       Response response = await post(
-                        Uri.parse('http://10.0.2.2:8080/api/v1/auth/login'),
+                        Uri.parse('http://esclub.eu-central-1.elasticbeanstalk.com/api/v1/auth/login'),
                         headers: <String, String>{
                           'Content-Type': 'application/json; charset=UTF-8',
                         },
